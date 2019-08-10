@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %} | Planeswalkers</title>
+        {# Favicon #}
+        <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+        <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#be0100">
+        <meta name="msapplication-TileColor" content="#be0100">
+        <meta name="theme-color" content="#ffffff">
+        {# Assets #}
+        <link rel="stylesheet" href="{{ asset('assets/fontawesome/css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/plateforme/css/sb-admin-2.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/select2/css/select2.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/plateforme/css/back.css') }}">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body id="page-top">
+
+        <div id="wrapper">
+
+            <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('back.index') }}">
+                <div class="sidebar-brand-icon rotate-n-45">
+                    {#<i class="fab fa-wizards-of-the-coast"></i>#}
+                </div>
+                <div class="sidebar-brand-text mx-3">Planeswalkers</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('back.index') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i><span>Tableau de bord</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDeck" aria-expanded="true" aria-controls="collapseDeck">
+                    <i class="fas fa-tasks"></i>
+                    <span>Decks</span>
+                </a>
+                <div id="collapseDeck" class="collapse show" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="#todo"><i class="far fa-envelope"></i> Mes decks</a>
+                        <a class="collapse-item" href="#todo"><i class="fas fa-filter"></i> Top 8</a>
+                    </div>
+                </div>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            </ul>
+
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <div id="content">
+
+                    <nav class="navbar navbar-expand navbar-dark bg-black topbar mb-4 static-top shadow">
+
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    {# Moteur de recherche - MD #}
+                    <form method="post" action="#todo" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" name="endpoint-search" class="form-control border-0 small" placeholder="Rechercher..." aria-label="Rechercher" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-sm btn-secondary" type="submit">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <ul class="navbar-nav ml-auto">
+
+                        {# Moteur de recherche - SM #}
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small" placeholder="Rechercher..." aria-label="Rechercher" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-secondary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        {# Aide #}
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ path('tutorial.index') }}" title="Aide en ligne">
+                                <i class="fas fa-question-circle fa-fw"></i>
+                            </a>
+                        </li>
+                        {# Signaler un bug #}
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ path('bug.index') }}" title="Signaler un bug">
+                                <i class="fas fa-bug fa-fw"></i>
+                            </a>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        {# Utilisateur #}
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.firstname }} {{ app.user.lastname }}</span>
+                                <i class="fas fa-user-circle fa-2x"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="{{ path('user.profil') }}">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i> Mon profil
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('contact.index') }}" title="Nous contacter">
+                                    <i class="fas fa-paper-plane fa-sm fa-fw mr-2 text-gray-400"></i> Nous contacter
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('logout') }}" title="Se déconnecter">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Se déconnecter
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                    </nav>
+
+                    
+                    <div class="container-fluid">
+
+                        {# Alertes #}
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check"></i> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {%  endfor %}
+                        {% for message in app.flashes('info') %}
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <i class="fas fa-info-circle"></i> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {%  endfor %}
+                        {% for message in app.flashes('warning') %}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {%  endfor %}
+                        {% for message in app.flashes('danger') %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-times"></i> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {%  endfor %}
+
+                        {# Contenu de la page #}
+                        {% block body %}{% endblock %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <div id="loader-area" class="small" style="display:none;">
+            <i class="fas fa-spinner fa-pulse"></i> Chargement en cours...
+        </div>
+
+        <noscript>Your browser does not support JavaScript!</noscript>
+        <script src="{{ asset('assets/jquery/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ asset('assets/popper/popper.min.js') }}"></script>
+        <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/plateforme/js/sb-admin-2.js') }}"></script>
+        <script src="{{ asset('assets/select2/js/select2.js') }}"></script>
+        <script src="{{ asset('bundles/fosckeditor/ckeditor.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

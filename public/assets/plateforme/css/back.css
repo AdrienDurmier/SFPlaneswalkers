@@ -1,0 +1,13 @@
+/* Recherche par autocomplétion */
+.autocomplete_area {position:relative;}
+.autocomplete_results_area {display:none;position:absolute;background-color:rgba(0,0,0,0.8);left:0;right:0;top:70px;box-shadow:0px 8px 8px #000;;padding:3px 10px;}
+.autocomplete_categorie {background-color:#888;font-weight:bold;padding:5px 10px;}
+.autocomplete_result {border-bottom:1px solid #000;padding:2px 10px;}
+.autocomplete_result a{font-size:0.80em;line-height:0.80em;color:#fff;}
+.autocomplete_all_results {text-align:right;padding:3px 10px;}
+#client_search_results {position:absolute;z-index:1;background-color:rgba(0,0,0,0.8);left:0;right:0;box-shadow:0px 8px 8px #000;}
+
+/* loader */
+#loader-area {position:fixed;padding:10px 32px;bottom:10px;left:10px;background-color:rgba(0,0,0,0.5);color:#fff;}
+
+input[type='file'].form-control {padding:0;}

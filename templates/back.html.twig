@@ -45,12 +45,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDeck" aria-expanded="true" aria-controls="collapseDeck">
                     <i class="fas fa-tasks"></i>
-                    <span>Decks</span>
+                    <span>Éditions</span>
                 </a>
                 <div id="collapseDeck" class="collapse show" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="#todo"><i class="far fa-envelope"></i> Mes decks</a>
-                        <a class="collapse-item" href="#todo"><i class="fas fa-filter"></i> Top 8</a>
+                        <a class="collapse-item" href="{{ path('planeswalkers.set.index') }}"><i class="far fa-envelope"></i> Liste</a>
                     </div>
                 </div>
             </li>

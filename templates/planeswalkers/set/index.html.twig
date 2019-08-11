@@ -17,11 +17,10 @@
                     <thead>
                     <tr>
                         <th></th>
-                        <th>ID</th>
-                        <th>Code</th>
                         <th>Name</th>
                         <th>Date</th>
                         <th>Count</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -30,11 +29,14 @@
                             <td style="color:#fff;font-size:2em;">
                                 <img src="{{ set.icon_svg_uri }}" class="img-fluid" style="height:50px;">
                             </td>
-                            <td>{{ set.id }}</td>
-                            <td>{{ set.code }}</td>
                             <td>{{ set.name }}</td>
                             <td>{{ set.released_at }}</td>
                             <td>{{ set.card_count }}</td>
+                            <td>
+                                <a href="{{ path('planeswalkers.set.show', {code: set.code}) }}">
+                                    voir
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

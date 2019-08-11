@@ -4,12 +4,34 @@ namespace App\Controller\Planeswalkers;
 
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\APIScryfall;
 
 class CardController extends AbstractController
 {
+    /**
+     * @Route("/admin/planeswalkers/cards/search", name="planeswalkers.card.search", methods="GET")
+     * @param APIScryfall $apiScryfall
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ServerException
+     */
+    public function search(APIScryfall $apiScryfall, Request $request) {
+        $params = $request->query->all();
+
+        $response_card = $apiScryfall->interroger('get', 'cards/search?q=name%3A'.$params['term']);
+
+        $response = array(
+            'cards' => $response_card->body
+        );
+
+        return new JsonResponse($response);
+    }
+
+
     /**
      * @Route("/admin/planeswalkers/cards/{id}", name="planeswalkers.card.show")
      * @param APIScryfall $apiScryfall

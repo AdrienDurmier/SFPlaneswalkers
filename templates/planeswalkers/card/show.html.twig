@@ -106,9 +106,9 @@
                 <dt class="col-md-2">rarity</dt>
                 <dd class="col-md-10">{{ card.rarity }}</dd>
                 <dt class="col-md-2">watermark</dt>
-                <dd class="col-md-10">{{ card.watermark }}</dd>
+                <dd class="col-md-10">{% if card.watermark is defined %}{{ card.watermark }}{% endif %}</dd>
                 <dt class="col-md-2">flavor_text</dt>
-                <dd class="col-md-10">{{ card.flavor_text }}</dd>
+                <dd class="col-md-10">{% if card.flavor_text is defined %}{{ card.flavor_text }}{% endif %}</dd>
                 <dt class="col-md-2">illustration_id</dt>
                 <dd class="col-md-10">{{ card.illustration_id }}</dd>
                 <dt class="col-md-2">card_back_id</dt>

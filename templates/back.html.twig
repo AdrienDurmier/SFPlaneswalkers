@@ -73,7 +73,7 @@
                     </button>
 
                     {# Moteur de recherche - MD #}
-                    <form method="post" action="#todo" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="autocomplete_area">
                             <input type="hidden" id="cards_search_choice" name="cards_search_choice">
                             <div class="input-group">
@@ -86,7 +86,7 @@
                                 <div id="card_search_cards"></div>
                             </div>
                         </div>
-                    </form>
+                    </div>
 
                     <ul class="navbar-nav ml-auto">
 
@@ -246,6 +246,9 @@
                 $('#cards_search_choice').val(card_id);
                 $('#card_search').val(card_name);
                 $('#card_search_results').hide();
+                let url = '{{ path("planeswalkers.card.show", {'id': 'card_id'}) }}';
+                url = url.replace("card_id", card_id);
+                window.location.href = url;
             });
 
             // Ferme les résultats d'autocomplétion lors d'un clic à l'extérieur de cet élement

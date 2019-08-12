@@ -1,0 +1,93 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}
+    {{ deck.title }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-layer-group"></i> {{ deck.title }}</h1>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-9">
+
+            {# Ajout de carte #}
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <form action="{{ path('planeswalkers.deckcarte.new', {deck : deck.id}) }}" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-lg-8 col-xl-5">
+                                {#<div class="input-group input-group-sm my-1">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <a data-toggle="tooltip" data-placement="top" title="Appuyez sur les touche Alt + S pour saisir rapidement une carte.">
+                                            Carte
+                                        </a>
+                                    </span>
+                                    </div>
+                                    <select class="form-control form-control-sm input-select2" id="carte" name="carte" style="max-width:85%" required>
+                                        <option value="_null">TODO</option>
+                                    </select>
+                                </div>#}
+                                <input id="id_scryfall" name="id_scryfall" type="text" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-lg-3 col-xl-2">
+                                <div class="input-group input-group-sm my-1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Quantité</span>
+                                    </div>
+                                    <input id="quantite" placeholder="Quantité" name="quantite" type="number" lang="en" min="1" step="1" value="1" class="form-control form-control-sm" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-xl-1">
+                                <div class="input-group my-1">
+                                    <button class="btn btn-sm btn-success" type="submit">
+                                        <i class="fas fa-plus"></i> <span class="d-lg-none d-xl-inline-block">Ajouter</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {# Contenu du deck #}
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    {% for carte in deck_cartes %}
+                        {{ carte.quantite }}x {{ carte.idScryfall }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light"><i class="fas fa-book-open"></i> Commentaires</div>
+                </div>
+                <div class="card-body">
+                    {{ deck.content|raw }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        {# Select 2 #}
+        $('.input-select2').select2();
+        $(document).on('keydown', function (event) {
+            // Recherche rapide avec le keyboard shortcut ALT+S
+            if (event.altKey && event.which == 83  && event.target.id != 'carte') {
+                $("#carte").focus();
+            }
+        });
+    </script>
+{% endblock %}

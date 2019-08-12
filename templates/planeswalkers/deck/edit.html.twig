@@ -18,7 +18,7 @@
             {# Ajout de carte #}
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    <form action="{{ path('planeswalkers.deckcarte.new', {deck : deck.id}) }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ path('planeswalkers.deckcard.new', {deck : deck.id}) }}" method="post" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-lg-8 col-xl-5">
                                 {#<div class="input-group input-group-sm my-1">
@@ -58,8 +58,8 @@
             {# Contenu du deck #}
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    {% for carte in deck_cartes %}
-                        {{ carte.quantite }}x {{ carte.idScryfall }}
+                    {% for deck_card in deck_cards %}
+                        {{ deck_card.quantite }}x {{ deck_card.card.name }}
                     {% endfor %}
                 </div>
             </div>

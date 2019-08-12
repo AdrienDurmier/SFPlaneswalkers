@@ -5,11 +5,11 @@ namespace App\Entity\Planeswalkers;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="planeswalkers_deck_carte")
- * @ORM\Entity(repositoryClass="App\Repository\Planeswalkers\DeckCarteRepository")
+ * @ORM\Table(name="planeswalkers_deck_card")
+ * @ORM\Entity(repositoryClass="App\Repository\Planeswalkers\DeckCardRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class DeckCarte
+class DeckCard
 {
     /**
      * @ORM\Id()
@@ -19,38 +19,29 @@ class DeckCarte
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $id_scryfall;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $quantite;
 
     /**
-     * @var DeckCarte
+     * @var DeckCard
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Planeswalkers\Deck", inversedBy="cartes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Planeswalkers\Deck")
      * @ORM\JoinColumn(nullable=false)
      */
     private $deck;
 
+    /**
+     * @var DeckCard
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\Planeswalkers\Card")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $card;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIdScryfall(): ?string
-    {
-        return $this->id_scryfall;
-    }
-
-    public function setIdScryfall(string $id_scryfall): self
-    {
-        $this->id_scryfall = $id_scryfall;
-
-        return $this;
     }
 
     public function getQuantite(): ?int
@@ -73,6 +64,16 @@ class DeckCarte
     public function setDeck(?Deck $deck): void
     {
         $this->deck = $deck;
+    }
+
+    public function getCard(): Card
+    {
+        return $this->card;
+    }
+
+    public function setCard(?Card $card): void
+    {
+        $this->card = $card;
     }
 
 }

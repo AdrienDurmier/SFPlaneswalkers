@@ -64,7 +64,7 @@ class Deck
     private $public;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Planeswalkers\DeckCarte", mappedBy="deck", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Planeswalkers\DeckCard", mappedBy="deck", cascade={"persist"})
      */
     private $cartes;
 
@@ -146,17 +146,17 @@ class Deck
         $this->author = $author;
     }
 
-    public function addCarte(DeckCarte $carte)
+    public function addCard(DeckCard $carte)
     {
         $this->cartes[] = $carte;
     }
 
-    public function removeCarte(DeckCarte $carte)
+    public function removeCard(DeckCard $carte)
     {
         $this->cartes->removeElement($carte);
     }
 
-    public function getCartes()
+    public function getCards()
     {
         return $this->cartes;
     }

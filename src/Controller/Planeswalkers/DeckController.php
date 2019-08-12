@@ -2,7 +2,7 @@
 
 namespace App\Controller\Planeswalkers;
 
-use App\Entity\Planeswalkers\DeckCarte;
+use App\Entity\Planeswalkers\DeckCard;
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,11 +64,11 @@ class DeckController extends AbstractController
      */
     public function edit(Deck $deck, APIScryfall $apiScryfall)
     {
-        $deck_cartes = $this->getDoctrine()->getRepository(DeckCarte::class)->findByDeck($deck);
+        $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findByDeck($deck);
 
         return $this->render('planeswalkers/deck/edit.html.twig', [
-            'deck'          =>  $deck,
-            'deck_cartes'   =>  $deck_cartes,
+            'deck'         =>  $deck,
+            'deck_cards'   =>  $deck_cards,
         ]);
     }
     

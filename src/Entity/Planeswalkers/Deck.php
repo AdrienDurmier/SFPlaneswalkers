@@ -64,7 +64,7 @@ class Deck
     private $public;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Planeswalkers\DeckCard", mappedBy="deck", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Planeswalkers\DeckCard", mappedBy="deck", cascade={"persist", "remove"})
      */
     private $cartes;
 

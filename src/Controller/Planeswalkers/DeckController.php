@@ -5,6 +5,7 @@ namespace App\Controller\Planeswalkers;
 use App\Entity\Planeswalkers\DeckCard;
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,7 +58,7 @@ class DeckController extends AbstractController
     }
 
     /**
-     * @Route("/admin/planeswalkers/decks/{id}", name="planeswalkers.deck.edit")
+     * @Route("/admin/planeswalkers/decks/{id}", name="planeswalkers.deck.edit", methods="GET|POST")
      * @param APIScryfall $apiScryfall
      * @return Response
      * @throws ServerException
@@ -70,6 +71,23 @@ class DeckController extends AbstractController
             'deck'         =>  $deck,
             'deck_cards'   =>  $deck_cards,
         ]);
+    }
+
+    /**
+     * @Route("/admin/planeswalkers/decks/{id}", name="planeswalkers.deck.delete", methods="DELETE")
+     * @param Deck $deck
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function delete(Deck $deck, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if($this->isCsrfTokenValid('delete_deck', $request->get('_token'))){
+            $em->remove($deck);
+            $em->flush();
+            $this->addFlash('success', "Deck supprimé avec succès");
+        }
+        return $this->redirectToRoute('planeswalkers.deck.index');
     }
     
 }

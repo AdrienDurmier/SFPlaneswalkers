@@ -4,6 +4,7 @@ namespace App\Controller\Planeswalkers;
 
 use App\Entity\Planeswalkers\Card;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,20 +15,20 @@ use App\Service\APIScryfall;
 class DeckCardController extends AbstractController
 {
     /**
-     * @Route("/admin/planeswalkers/deckcard/new/{deck}", name="planeswalkers.deckcard.new")
-     * @param Deck $deck
+     * @Route("/admin/planeswalkers/deckcard/new", name="planeswalkers.deckcard.new")
      * @param APIScryfall $apiScryfall
      * @param Request $request
      * @return Response
      * @throws \Doctrine\DBAL\Exception\ServerException
      */
-    public function new(Deck $deck, APIScryfall $apiScryfall, Request $request)
+    public function new(APIScryfall $apiScryfall, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         if ($request->isMethod('POST')) {
             $datas = $request->request->all();
             $deckcard = new DeckCard();
             // Création de la card en local
+            $deck = $this->getDoctrine()->getRepository(Deck::class)->find($datas['deck']);
             $response_card = $apiScryfall->interroger('get', 'cards/'.$datas['id_scryfall']);
             $card = new Card(); // todo vérifier si cette card est déjà existente en local
             $card->setIdScryfall($response_card->body->id);
@@ -57,5 +58,30 @@ class DeckCardController extends AbstractController
         return $this->render('planeswalkers/deck/new.html.twig', [
         ]);
     }
+
+    /**
+     * @Route("/admin/planeswalkers/deckcard/ajax-quantite", name="planeswalkers.deckcard.ajax.quantite", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function ajaxQuantite(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $datas = $request->request->all();
+        $success = false;
+        $deckcard = $this->getDoctrine()->getRepository(DeckCard::class)->find($datas['deckcard']);
+        if(isset($datas['quantite'])){
+            $deckcard->setQuantite($datas['quantite']);
+            $em->persist($deckcard);
+            $em->flush();
+            $success = true;
+        }
+        $em->flush();
+        $response = array(
+            'success' => $success,
+        );
+        return new JsonResponse($response);
+    }
+
 
 }

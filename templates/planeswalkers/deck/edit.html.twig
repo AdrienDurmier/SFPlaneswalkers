@@ -8,7 +8,24 @@
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-layer-group"></i> {{ deck.title }}</h1>
+        <div class="d-sm-inline-block">
+            <a href="{{ path('planeswalkers.deck.index') }}" class="btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-reply fa-sm text-white-50"></i>
+            </a>
+            <form method="post" style="display:inline-block;"action="{{ path('planeswalkers.deck.delete', {id: deck.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?')">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_deck') }}">
+                <button class="btn btn-sm btn-danger" title="Supprimer ce deck"><i class="fas fa-trash fa-sm text-white-50"></i> Supprimer ce deck</button>
+            </form>
+        </div>
     </div>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('planeswalkers.deck.index') }}">Mes decks</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ deck.title }}</li>
+        </ol>
+    </nav>
 
     <hr>
 
@@ -19,21 +36,21 @@
             <div class="card shadow mb-4">
                 <div class="card-body">
                     <form action="{{ path('planeswalkers.deckcard.new', {deck : deck.id}) }}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="deck" value="{{ deck.id }}">
                         <div class="row">
                             <div class="col-lg-8 col-xl-5">
-                                {#<div class="input-group input-group-sm my-1">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <a data-toggle="tooltip" data-placement="top" title="Appuyez sur les touche Alt + S pour saisir rapidement une carte.">
-                                            Carte
-                                        </a>
-                                    </span>
+                                <div class="autocomplete_area my-1">
+                                    <input type="hidden" id="id_scryfall" name="id_scryfall">
+                                    <div class="input-group">
+                                        <input id="deck_card_search" name="deck_card_search" class="form-control form-control-sm" placeholder="Rechercher une carte..." type="search">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        </div>
                                     </div>
-                                    <select class="form-control form-control-sm input-select2" id="carte" name="carte" style="max-width:85%" required>
-                                        <option value="_null">TODO</option>
-                                    </select>
-                                </div>#}
-                                <input id="id_scryfall" name="id_scryfall" type="text" class="form-control form-control-sm" required>
+                                    <div id="deck_card_search_results" class="autocomplete_search_results" style="display:none;">
+                                        <div id="deck_card_search_cards"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-lg-3 col-xl-2">
                                 <div class="input-group input-group-sm my-1">
@@ -61,10 +78,8 @@
                     <div class="row">
                         {% for deck_card in deck_cards %}
                             <div class="col-sm-6 col-md-4 col-lg-3">
-                                <figure>
-                                    <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
-                                    <figcaption>{{ deck_card.quantite }}x {{ deck_card.card.name }}</figcaption>
-                                </figure>
+                                <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
+                                <input type="number" min="0" step="1" class="form-control form-control-sm input-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantite }}" />
                             </div>
                         {% endfor %}
                     </div>
@@ -89,13 +104,91 @@
 
 {% block javascripts %}
     <script>
-        {# Select 2 #}
-        $('.input-select2').select2();
-        $(document).on('keydown', function (event) {
-            // Recherche rapide avec le keyboard shortcut ALT+S
-            if (event.altKey && event.which == 83  && event.target.id != 'carte') {
-                $("#carte").focus();
+        // Action lors du choix d'une carte
+        $(document).on('mouseout', '.input-quantite', function (event) {
+            let parametres = {
+                deckcard: $(this).data('deckcard'),
+                quantite: $(this).val(),
+            };
+            $.ajax({
+                url: "{{ path('planeswalkers.deckcard.ajax.quantite') }}",
+                type: 'post',
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#saving-area').fadeIn();
+                },
+                complete: function () {
+                    $('#saving-area').fadeOut();
+                },
+                data: parametres
+            });
+        });
+
+
+        /**
+         * Moteur de recherche de cartes
+         */
+        // Lance la recherche si l'utilisateur n'a pas saisie depuis 500ms
+        $('#deck_card_search').keyup(function () {
+            clearTimeout($.data(this, 'timer'));
+            let wait = setTimeout(searchCards, 500);
+            $(this).data('timer', wait);
+        });
+
+        // Recherche de carte
+        function searchCards() {
+            var nb_caractere_debut_recherche = 3;
+            if ($('#deck_card_search').val().length >= nb_caractere_debut_recherche) {
+                let parametres = {
+                    term: $('#deck_card_search').val().replace(' ', '+'), // Terme à rechercher
+                };
+                $.ajax({
+                    url: "{{ path('planeswalkers.card.search') }}",
+                    type: 'get',
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#loader-area').fadeIn();
+                    },
+                    success: function (data) {
+                        $('#deck_card_search_results').show();
+                        let results_html = '';
+                        $.each(data.cards.data, function (index, element) {
+                            results_html = results_html + '<div class="autocomplete_result">';
+                            results_html = results_html + '<a class="autocomplete_choice autocomplete_deck_card_choice"';
+                            results_html = results_html + ' data-card-id="' + element.id + '"';
+                            results_html = results_html + ' data-card-name="' + element.name + '"';
+                            results_html = results_html + '>';
+                            results_html = results_html + element.name;
+                            results_html = results_html + '</a>';
+                            results_html = results_html + '</div>';
+                        });
+                        results_html = results_html + '</div>';
+                        $('#deck_card_search_cards').html(results_html);
+                    },
+                    complete: function () {
+                        $('#loader-area').fadeOut();
+                    },
+                    data: parametres
+                });
+            }
+        }
+
+        // Action lors du choix d'une carte
+        $(document).on('click', '.autocomplete_deck_card_choice', function (event) {
+            let card_id = $(this).data('card-id');
+            let card_name = $(this).data('card-name');
+            $('#id_scryfall').val(card_id);
+            $('#deck_card_search').val(card_name);
+            $('#deck_card_search_results').hide();
+        });
+
+        // Ferme les résultats d'autocomplétion lors d'un clic à l'extérieur de cet élement
+        $(document.body).click(function (e) {
+            let div_cliquable = $('.autocomplete_area');
+            if (!$(e.target).is(div_cliquable) && !$.contains(div_cliquable[0], e.target)) {
+                $('#deck_card_search_results').hide();
             }
         });
+
     </script>
 {% endblock %}

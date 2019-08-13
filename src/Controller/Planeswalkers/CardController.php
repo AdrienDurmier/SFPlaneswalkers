@@ -2,6 +2,7 @@
 
 namespace App\Controller\Planeswalkers;
 
+use App\Entity\Planeswalkers\Deck;
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,9 +44,12 @@ class CardController extends AbstractController
         $response_card = $apiScryfall->interroger('get', 'cards/'.$id);
         $response_rules = $apiScryfall->interroger('get', 'cards/'.$id.'/rulings');
 
+        $decks = $this->getDoctrine()->getRepository(Deck::class)->findAll();
+
         return $this->render('planeswalkers/card/show.html.twig', [
-            'card'  =>  $response_card->body,
-            'rules'  =>  $response_rules->body,
+            'card'      =>  $response_card->body,
+            'rules'     =>  $response_rules->body,
+            'decks'     =>  $decks,
         ]);
     }
     

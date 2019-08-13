@@ -68,17 +68,21 @@ class DeckCardController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $datas = $request->request->all();
-        $success = false;
+        $delete = false;
         $deckcard = $this->getDoctrine()->getRepository(DeckCard::class)->find($datas['deckcard']);
         if(isset($datas['quantite'])){
-            $deckcard->setQuantite($datas['quantite']);
-            $em->persist($deckcard);
+            if($datas['quantite'] > 1) {
+                $deckcard->setQuantite($datas['quantite']);
+                $em->persist($deckcard);
+            } else {
+                $em->remove($deckcard);
+                $delete = true;
+            }
             $em->flush();
-            $success = true;
         }
         $em->flush();
         $response = array(
-            'success' => $success,
+            'delete' => $delete,
         );
         return new JsonResponse($response);
     }

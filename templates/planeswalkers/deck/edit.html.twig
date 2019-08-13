@@ -42,7 +42,7 @@
                                 <div class="autocomplete_area my-1">
                                     <input type="hidden" id="id_scryfall" name="id_scryfall">
                                     <div class="input-group">
-                                        <input id="deck_card_search" name="deck_card_search" class="form-control form-control-sm" placeholder="Rechercher une carte..." type="search">
+                                        <input id="deck_card_search" name="deck_card_search" class="form-control form-control-sm" placeholder="Rechercher une carte..." type="search" autocomplete="off">
                                         <div class="input-group-append">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
                                         </div>
@@ -77,9 +77,20 @@
                 <div class="card-body">
                     <div class="row">
                         {% for deck_card in deck_cards %}
-                            <div class="col-sm-6 col-md-4 col-lg-3">
-                                <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
-                                <input type="number" min="0" step="1" class="form-control form-control-sm input-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantite }}" />
+                            <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                <div class="py-3">
+                                    <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input type="number" min="0" step="1" class="form-control form-control-sm input-deckcard-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantite }}" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <a class="text-danger input-deckcard-delete" title="Supprimer cette carte" data-deckcard="{{ deck_card.id }}" style="cursor:pointer;">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
@@ -87,11 +98,38 @@
             </div>
         </div>
 
-        {# Commentaires #}
         <div class="col-md-3">
+            {# Légalité #}
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light"><i class="fas fa-book-open"></i> Commentaires</div>
+                    <div class="h6 m-0 font-weight-bold text-light">Légalités</div>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+
+            {# Couleur #}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">Couleur</div>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+
+            {# Budget #}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">Budget</div>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+
+            {# Commentaires #}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">Commentaires</div>
                 </div>
                 <div class="card-body">
                     {{ deck.content|raw }}
@@ -104,11 +142,12 @@
 
 {% block javascripts %}
     <script>
-        // Action lors du choix d'une carte
-        $(document).on('mouseout', '.input-quantite', function (event) {
+        // Modification de la quantité en live
+        $(document).on('mouseout', '.input-deckcard-quantite', function (event) {
+            let deckcard = $(this);
             let parametres = {
                 deckcard: $(this).data('deckcard'),
-                quantite: $(this).val(),
+                quantite: deckcard.val(),
             };
             $.ajax({
                 url: "{{ path('planeswalkers.deckcard.ajax.quantite') }}",
@@ -117,13 +156,42 @@
                 beforeSend: function () {
                     $('#saving-area').fadeIn();
                 },
+                success: function (data) {
+                    if(data.delete == true){
+                        deckcard.closest('.deck-card-area').remove();
+                    }
+                },
                 complete: function () {
                     $('#saving-area').fadeOut();
                 },
                 data: parametres
             });
         });
-
+        // Suppression d'une carte en live
+        $(document).on('click', '.input-deckcard-delete', function (event) {
+            let deckcard = $(this);
+            let parametres = {
+                deckcard: $(this).data('deckcard'),
+                quantite: 0,
+            };
+            $.ajax({
+                url: "{{ path('planeswalkers.deckcard.ajax.quantite') }}",
+                type: 'post',
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#saving-area').fadeIn();
+                },
+                success: function (data) {
+                    if(data.delete == true){
+                        deckcard.closest('.deck-card-area').remove();
+                    }
+                },
+                complete: function () {
+                    $('#saving-area').fadeOut();
+                },
+                data: parametres
+            });
+        });
 
         /**
          * Moteur de recherche de cartes

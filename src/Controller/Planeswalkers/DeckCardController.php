@@ -26,18 +26,28 @@ class DeckCardController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         if ($request->isMethod('POST')) {
             $datas = $request->request->all();
-            $deckcarte = new DeckCard();
-            // Création de la carte en local
+            $deckcard = new DeckCard();
+            // Création de la card en local
             $response_card = $apiScryfall->interroger('get', 'cards/'.$datas['id_scryfall']);
-            $carte = new Card(); // todo vérifier si cette carte est déjà existente en local
-            $carte->setIdScryfall($response_card->body->id);
-            $carte->setName($response_card->body->name);
-            $em->persist($carte);
+            $card = new Card(); // todo vérifier si cette card est déjà existente en local
+            $card->setIdScryfall($response_card->body->id);
+            $card->setName($response_card->body->name);
+            $card->setLayout($response_card->body->layout);
+            $card->setImageUrisSmall($response_card->body->image_uris->small);
+            $card->setImageUrisNormal($response_card->body->image_uris->normal);
+            $card->setImageUrisLarge($response_card->body->image_uris->large);
+            $card->setImageUrisPng($response_card->body->image_uris->png);
+            $card->setImageUrisArtCrop($response_card->body->image_uris->art_crop);
+            $card->setManaCost($response_card->body->mana_cost);
+            $card->setCmc($response_card->body->cmc);
+            $card->setTypeLine($response_card->body->type_line);
+            $card->setRarity($response_card->body->rarity);
+            $em->persist($card);
             $em->flush();
-            $deckcarte->setCard($carte);
-            $deckcarte->setQuantite($datas['quantite']);
-            $deckcarte->setDeck($deck);
-            $em->persist($deckcarte);
+            $deckcard->setCard($card);
+            $deckcard->setQuantite($datas['quantite']);
+            $deckcard->setDeck($deck);
+            $em->persist($deckcard);
             $em->flush();
             return $this->redirectToRoute('planeswalkers.deck.edit', [
                 'id' => $deck->getId()

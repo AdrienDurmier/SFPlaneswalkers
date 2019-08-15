@@ -11,7 +11,9 @@
 {% block body %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-200"><i class="fas fa-layer-group"></i> {{ deck.title }}</h1>
+        <h1 class="h3 mb-0 text-gray-200">
+            <i class="fas fa-layer-group"></i>&nbsp;{{ deck.title }}
+        </h1>
         <div class="d-sm-inline-block">
             <a href="{{ path('planeswalkers.deck.index') }}" class="btn btn-sm btn-secondary shadow-sm">
                 <i class="fas fa-reply fa-sm text-white-50"></i>
@@ -113,38 +115,45 @@
         </div>
 
         <div class="col-md-3">
-            {# Couleur #}
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Couleur</div>
-                </div>
-                <div class="card-body">
-                    {% for color in deck.colorsDeck %}
-                        {{ color }}
-                    {% endfor %}
-                </div>
-            </div>
-            
             {# Mana #}
             <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Mana</div>
+                <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">
+                        Mana
+                    </div>
                 </div>
                 <div class="card-body">
+                    <p>
+                        <b>Couleur du deck:</b>
+                        {% for color in deck.colorsDeck %}
+                            <span class="mx-1 d-inline-block card-symbol-{{ color }}" style="width:20px;height:20px;"></span>
+                        {% endfor %}
+                    </p>
+                    <hr>
                     <p><b>Courbe de mana des sorts:</b></p>
                     <canvas id="manaCurveChart" width="400" height="400"></canvas>
                 </div>
             </div>
 
-            {# Commentaires #}
+            {# Rareté #}
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Commentaires</div>
+                    <div class="h6 m-0 font-weight-bold text-light">Rareté</div>
                 </div>
                 <div class="card-body">
-                    {{ deck.content|raw }}
+
                 </div>
             </div>
+        </div>
+    </div>
+
+    {# Commentaires #}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <div class="h6 m-0 font-weight-bold text-light">Commentaires</div>
+        </div>
+        <div class="card-body">
+            {{ deck.content|raw }}
         </div>
     </div>
 

@@ -12,6 +12,9 @@
             <a href="{{ path('planeswalkers.deck.index') }}" class="btn btn-sm btn-secondary shadow-sm">
                 <i class="fas fa-reply fa-sm text-white-50"></i>
             </a>
+            <a href="{{ path('planeswalkers.deck.estimation', {id: deck.id}) }}" class="btn btn-sm btn-info shadow-sm">
+                <i class="fas fa-euro-sign fa-sm text-white-50"></i> Estimation
+            </a>
             <form method="post" style="display:inline-block;"action="{{ path('planeswalkers.deck.delete', {id: deck.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?')">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_deck') }}">
@@ -92,6 +95,7 @@
                                             </span>
                                         </div>
                                     </div>
+                                    {{ deck_card.card.typeLine }}
                                 </div>
                             </div>
                         {% endfor %}
@@ -114,15 +118,6 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <div class="h6 m-0 font-weight-bold text-light">Couleur</div>
-                </div>
-                <div class="card-body">
-                </div>
-            </div>
-
-            {# Budget #}
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Budget</div>
                 </div>
                 <div class="card-body">
                 </div>

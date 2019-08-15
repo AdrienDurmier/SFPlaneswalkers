@@ -5,6 +5,7 @@ namespace App\Controller\Planeswalkers;
 use App\Entity\Planeswalkers\DeckCard;
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,11 +60,10 @@ class DeckController extends AbstractController
 
     /**
      * @Route("/admin/planeswalkers/decks/{id}", name="planeswalkers.deck.edit", methods="GET|POST")
-     * @param APIScryfall $apiScryfall
      * @return Response
      * @throws ServerException
      */
-    public function edit(Deck $deck, APIScryfall $apiScryfall)
+    public function edit(Deck $deck)
     {
         $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findByDeck($deck);
 
@@ -88,6 +88,37 @@ class DeckController extends AbstractController
             $this->addFlash('success', "Deck supprimé avec succès");
         }
         return $this->redirectToRoute('planeswalkers.deck.index');
+    }
+
+    /**
+     * @Route("/admin/planeswalkers/decks-estimation/{id}", name="planeswalkers.deck.estimation")
+     * @param Deck $deck
+     * @param APIScryfall $apiScryfall
+     * @return Response
+     * @throws ServerException
+     */
+    public function estimation(Deck $deck, APIScryfall $apiScryfall)
+    {
+        $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findByDeck($deck);
+
+        $estimation = [];
+        $total = 0;
+        foreach($deck_cards as $deck_card){
+            $response_card = $apiScryfall->interroger('get', 'cards/'.$deck_card->getCard()->getIdScryfall());
+            $total_carte = $deck_card->getQuantite() * $response_card->body->prices->eur;
+            $total += $total_carte;
+            // carte
+            $estimation['cartes'][$deck_card->getCard()->getId()]['carte'] = $response_card->body;
+            $estimation['cartes'][$deck_card->getCard()->getId()]['quantite'] = $deck_card->getQuantite();
+            $estimation['cartes'][$deck_card->getCard()->getId()]['total_carte'] = $total_carte;
+            // total
+            $estimation['deck']['total'] = $total;
+        }
+
+        return $this->render('planeswalkers/deck/estimation.html.twig', [
+            'deck'         =>  $deck,
+            'estimation'   =>  $estimation,
+        ]);
     }
     
 }

@@ -4,6 +4,10 @@
     {{ deck.title }}
 {% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/chart/chart.min.css') }}">
+{% endblock %}
+
 {% block body %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -100,7 +104,6 @@
                                             </span>
                                         </div>
                                     </div>
-                                    {{ deck_card.card.typeLine }}
                                 </div>
                             </div>
                         {% endfor %}
@@ -110,15 +113,6 @@
         </div>
 
         <div class="col-md-3">
-            {# Légalité #}
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Légalités</div>
-                </div>
-                <div class="card-body">
-                </div>
-            </div>
-
             {# Couleur #}
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -128,6 +122,17 @@
                     {% for color in deck.colorsDeck %}
                         {{ color }}
                     {% endfor %}
+                </div>
+            </div>
+            
+            {# Mana #}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">Mana</div>
+                </div>
+                <div class="card-body">
+                    <p><b>Courbe de mana des sorts:</b></p>
+                    <canvas id="manaCurveChart" width="400" height="400"></canvas>
                 </div>
             </div>
 
@@ -146,7 +151,46 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('assets/chart/chart.min.js') }}"></script>
     <script>
+        // Courbe de mana
+        var ctx = document.getElementById('manaCurveChart');
+        var myChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '10+'],
+                datasets: [{
+                    data: [{% for cmc in deck.getManaCurve %}{{ cmc }}{% if not loop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [
+                        {% for cmc in deck.getManaCurve %}'rgba(255, 255, 255, 0.2)'{% if not loop.last %},{% endif %}{% endfor %}
+                    ],
+                    borderColor: [
+                        {% for cmc in deck.getManaCurve %}'rgba(255, 255, 255, 0.2)'{% if not loop.last %},{% endif %}{% endfor %}
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Coût converti de mana (CMC)'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Nombre de cartes'
+                        }
+                    }]
+                }
+            }
+        });
+
         // Modification de la quantité en live
         $(document).on('mouseout', '.input-deckcard-quantite', function (event) {
             let deckcard = $(this);

@@ -189,4 +189,30 @@ class Deck
         return $colors;
     }
 
+    /**
+     * Méthode de générer la courbe de mana
+     * @return int
+     */
+    public function getManaCurve(){
+        $mana_curve = array(
+            '0' => 0, '1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0,
+            '6' => 0, '7' => 0, '8' => 0, '9' => 0, '10' => 0, '10+' => 0,
+        );
+        foreach($this->cartes as $deck_card){
+            // On ne compte pas les terrains
+            if(strpos(strtolower($deck_card->getCard()->getTypeLine()), 'land')!== false) {
+            }else{
+                // Si plus de 10 mana on le regroupe dans la même courbe
+                if($deck_card->getCard()->getCmc() > 10){
+                    $mana_curve['10+'] += $deck_card->getQuantite();
+                }
+                // Cas classique
+                else{
+                    $mana_curve[$deck_card->getCard()->getCmc()] += $deck_card->getQuantite();
+                }
+            }
+        }
+        return $mana_curve;
+    }
+
 }

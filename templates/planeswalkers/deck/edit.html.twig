@@ -77,6 +77,11 @@
 
             {# Contenu du deck #}
             <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">
+                        {{ deck.countCards }} cartes
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row">
                         {% for deck_card in deck_cards %}
@@ -120,6 +125,9 @@
                     <div class="h6 m-0 font-weight-bold text-light">Couleur</div>
                 </div>
                 <div class="card-body">
+                    {% for color in deck.colorsDeck %}
+                        {{ color }}
+                    {% endfor %}
                 </div>
             </div>
 

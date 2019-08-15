@@ -75,6 +75,11 @@ class Card
     private $mana_cost;
 
     /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $colors;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $cmc;
@@ -246,6 +251,18 @@ class Card
     public function setRarity(string $rarity): self
     {
         $this->rarity = $rarity;
+
+        return $this;
+    }
+
+    public function getColors(): ?array
+    {
+        return $this->colors;
+    }
+
+    public function setColors(?array $colors): self
+    {
+        $this->colors = $colors;
 
         return $this;
     }

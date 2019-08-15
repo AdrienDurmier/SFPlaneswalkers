@@ -161,4 +161,32 @@ class Deck
         return $this->cartes;
     }
 
+    /**
+     * Méthode permettant de compter le nombre total de carte dans un deck
+     * @return int
+     */
+    public function countCards(){
+        $total = 0;
+        foreach($this->cartes as $deck_card){
+            $total += $deck_card->getQuantite();
+        }
+        return $total;
+    }
+
+    /**
+     * Méthode permettant d'analyser la couleur d'un deck
+     * @return int
+     */
+    public function colorsDeck(){
+        $colors = array();
+        foreach($this->cartes as $deck_card){
+            foreach($deck_card->getCard()->getColors() as $color){
+                if (!in_array($color, $colors)) {
+                    $colors[] = $color;
+                }
+            }
+        }
+        return $colors;
+    }
+
 }

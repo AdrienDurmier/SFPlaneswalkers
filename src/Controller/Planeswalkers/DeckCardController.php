@@ -43,6 +43,7 @@ class DeckCardController extends AbstractController
             $card->setCmc($response_card->body->cmc);
             $card->setTypeLine($response_card->body->type_line);
             $card->setRarity($response_card->body->rarity);
+            $card->setColors($response_card->body->colors);
             $em->persist($card);
             $em->flush();
             $deckcard->setCard($card);

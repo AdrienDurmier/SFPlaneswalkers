@@ -2,16 +2,16 @@
 
 namespace App\Controller\Planeswalkers;
 
-use App\Entity\Planeswalkers\DeckCard;
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Planeswalkers\Deck;
 use App\Service\APIScryfall;
+use App\Entity\Planeswalkers\DeckCard;
+use App\Service\Planeswalkers\ProbabilityService;
 
 class DeckController extends AbstractController
 {
@@ -120,5 +120,22 @@ class DeckController extends AbstractController
             'estimation'   =>  $estimation,
         ]);
     }
-    
+
+    /**
+     * @Route("/admin/planeswalkers/decks-probabilites/{id}", name="planeswalkers.deck.probabilites")
+     * @param Deck $deck
+     * @param ProbabilityService $probabilityService
+     * @return Response
+     */
+    public function probabilites(Deck $deck, ProbabilityService $probabilityService)
+    {
+        $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findByDeck($deck);
+        $probabilites = $probabilityService->tirageParTour($deck, $deck_cards);
+
+        return $this->render('planeswalkers/deck/probabilites.html.twig', [
+            'deck'         =>  $deck,
+            'probabilites' =>  $probabilites,
+        ]);
+    }
+
 }

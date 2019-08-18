@@ -26,28 +26,42 @@ class DeckCardController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         if ($request->isMethod('POST')) {
             $datas = $request->request->all();
-            $deckcard = new DeckCard();
             // Création de la card en local
             $deck = $this->getDoctrine()->getRepository(Deck::class)->find($datas['deck']);
             $response_card = $apiScryfall->interroger('get', 'cards/'.$datas['id_scryfall']);
-            $card = new Card(); // todo vérifier si cette card est déjà existente en local
-            $card->setIdScryfall($response_card->body->id);
-            $card->setName($response_card->body->name);
-            $card->setLayout($response_card->body->layout);
-            $card->setImageUrisSmall($response_card->body->image_uris->small);
-            $card->setImageUrisNormal($response_card->body->image_uris->normal);
-            $card->setImageUrisLarge($response_card->body->image_uris->large);
-            $card->setImageUrisPng($response_card->body->image_uris->png);
-            $card->setImageUrisArtCrop($response_card->body->image_uris->art_crop);
-            $card->setManaCost($response_card->body->mana_cost);
-            $card->setCmc($response_card->body->cmc);
-            $card->setTypeLine($response_card->body->type_line);
-            $card->setRarity($response_card->body->rarity);
-            $card->setColors($response_card->body->colors);
-            $em->persist($card);
-            $em->flush();
-            $deckcard->setCard($card);
-            $deckcard->setQuantite($datas['quantite']);
+            $deckcard = null;
+            foreach($deck->getCards() as $deck_card){
+                if($deck_card->getCard()->getIdScryfall() == $datas['id_scryfall']){
+                    $deckcard = $deck_card;
+                }
+            }
+            if($deckcard === null){
+                $deckcard = new DeckCard();
+                $card = new Card(); // todo vérifier si cette card est déjà existente en local
+                $card->setIdScryfall($response_card->body->id);
+                $card->setName($response_card->body->name);
+                $card->setLayout($response_card->body->layout);
+                $card->setImageUrisSmall($response_card->body->image_uris->small);
+                $card->setImageUrisNormal($response_card->body->image_uris->normal);
+                $card->setImageUrisLarge($response_card->body->image_uris->large);
+                $card->setImageUrisPng($response_card->body->image_uris->png);
+                $card->setImageUrisArtCrop($response_card->body->image_uris->art_crop);
+                $card->setManaCost($response_card->body->mana_cost);
+                $card->setCmc($response_card->body->cmc);
+                $card->setTypeLine($response_card->body->type_line);
+                $card->setRarity($response_card->body->rarity);
+                $card->setColors($response_card->body->colors);
+                $em->persist($card);
+                $em->flush();
+                $deckcard->setCard($card);
+            }
+            if(isset($datas['reserve'])){
+                $quantite = $deckcard->getQuantiteReserve() + $datas['quantite'];
+                $deckcard->setQuantiteReserve($quantite);
+            }else{
+                $quantite = $deckcard->getQuantite() + $datas['quantite'];
+                $deckcard->setQuantite($quantite);
+            }
             $deckcard->setDeck($deck);
             $em->persist($deckcard);
             $em->flush();

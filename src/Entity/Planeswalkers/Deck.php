@@ -162,13 +162,25 @@ class Deck
     }
 
     /**
-     * Méthode permettant de compter le nombre total de carte dans un deck
+     * Méthode permettant de compter le nombre total de carte principal dans le deck
      * @return int
      */
     public function countCards(){
         $total = 0;
         foreach($this->cartes as $deck_card){
             $total += $deck_card->getQuantite();
+        }
+        return $total;
+    }
+
+    /**
+     * Méthode permettant de compter le nombre total de carte en réserve
+     * @return int
+     */
+    public function countReserve(){
+        $total = 0;
+        foreach($this->cartes as $deck_card){
+            $total += $deck_card->getQuantiteReserve();
         }
         return $total;
     }

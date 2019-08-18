@@ -19,9 +19,14 @@ class DeckCard
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $quantite;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $quantite_reserve;
 
     /**
      * @var DeckCard
@@ -49,9 +54,21 @@ class DeckCard
         return $this->quantite;
     }
 
-    public function setQuantite(int $quantite): self
+    public function setQuantite(?int $quantite): self
     {
         $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    public function getQuantiteReserve(): ?int
+    {
+        return $this->quantite_reserve;
+    }
+
+    public function setQuantiteReserve(?int $quantite_reserve): self
+    {
+        $this->quantite_reserve = $quantite_reserve;
 
         return $this;
     }

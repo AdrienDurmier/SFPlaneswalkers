@@ -44,7 +44,7 @@
                     <form action="{{ path('planeswalkers.deckcard.new', {deck : deck.id}) }}" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="deck" value="{{ deck.id }}">
                         <div class="row">
-                            <div class="col-lg-8 col-xl-5">
+                            <div class="col-sm-12 col-xl-6">
                                 <div class="autocomplete_area my-1">
                                     <input type="hidden" id="id_scryfall" name="id_scryfall">
                                     <div class="input-group">
@@ -58,18 +58,23 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-xl-2">
+                            <div class="col-sm-9 col-xl-4">
                                 <div class="input-group input-group-sm my-1">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Quantité</span>
                                     </div>
-                                    <input id="quantite" placeholder="Quantité" name="quantite" type="number" lang="en" min="1" step="1" value="1" class="form-control form-control-sm" required>
+                                    <input id="quantite" placeholder="Quantité" name="quantite" type="number" lang="en" min="0" step="1" value="1" class="form-control form-control-sm" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <input type="checkbox" name="reserve">&nbsp;Réserve
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-1 col-xl-1">
+                            <div class="col-sm-3 col-xl-1">
                                 <div class="input-group my-1">
                                     <button class="btn btn-sm btn-success" type="submit">
-                                        <i class="fas fa-plus"></i> <span class="d-lg-none d-xl-inline-block">Ajouter</span>
+                                        <i class="fas fa-plus"></i> Ajouter
                                     </button>
                                 </div>
                             </div>
@@ -88,6 +93,7 @@
                 <div class="card-body">
                     <div class="row">
                         {% for deck_card in deck_cards %}
+                            {% if deck_card.quantite %}
                             <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
                                 <div class="py-3">
                                     <a href="{{ path('planeswalkers.card.show', {id: deck_card.card.idScryfall}) }}">
@@ -105,6 +111,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
@@ -114,10 +121,31 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <div class="h6 m-0 font-weight-bold text-light">
-                        TODO cartes en réserve
+                        {{ deck.countReserve }} cartes en réserve
                     </div>
                 </div>
                 <div class="card-body">
+                    {% for deck_card in deck_cards %}
+                        {% if deck_card.quantiteReserve %}
+                            <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                <div class="py-3">
+                                    <a href="{{ path('planeswalkers.card.show', {id: deck_card.card.idScryfall}) }}">
+                                        <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
+                                    </a>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input type="number" min="0" step="1" class="form-control form-control-sm input-deckcard-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantiteReserve }}" />
+                                        <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <a class="text-danger input-deckcard-delete" title="Supprimer cette carte" data-deckcard="{{ deck_card.id }}" style="cursor:pointer;">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -222,7 +250,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="h5 modal-title" id="mainDepartModalTitle">Simulation d'une main de départ</div>
+                    <div class="h5 modal-title" id="mainDepartModalTitle">Simulation d'une <m></m>ain de départ</div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

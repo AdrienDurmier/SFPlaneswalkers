@@ -22,6 +22,7 @@
                     <thead>
                     <tr>
                         <th>Nom</th>
+                        <th>Couleur</th>
                         <th>Date</th>
                         <th>Action</th>
                     </tr>
@@ -30,6 +31,11 @@
                     {% for deck in decks %}
                         <tr>
                             <td>{{ deck.title }}</td>
+                            <td>
+                                {% for color in deck.colorsDeck %}
+                                    <span class="mx-1 d-inline-block card-symbol-{{ color }}" style="width:20px;height:20px;"></span>
+                                {% endfor %}
+                            </td>
                             <td>{{ deck.updated|date('d/m/Y') }}</td>
                             <td>
                                 <a href="{{ path('planeswalkers.deck.edit', {id: deck.id}) }}">

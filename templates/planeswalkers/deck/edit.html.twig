@@ -18,9 +18,6 @@
             <a href="{{ path('planeswalkers.deck.index') }}" class="btn btn-sm btn-secondary shadow-sm">
                 <i class="fas fa-reply fa-sm text-white-50"></i>
             </a>
-            <a href="{{ path('planeswalkers.deck.estimation', {id: deck.id}) }}" class="btn btn-sm btn-info shadow-sm">
-                <i class="fas fa-euro-sign fa-sm text-white-50"></i> Estimation
-            </a>
             <form method="post" style="display:inline-block;"action="{{ path('planeswalkers.deck.delete', {id: deck.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?')">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_deck') }}">
@@ -85,7 +82,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <div class="h6 m-0 font-weight-bold text-light">
-                        {{ deck.countCards }} cartes
+                        {{ deck.countCards }} cartes principales
                     </div>
                 </div>
                 <div class="card-body">
@@ -110,6 +107,17 @@
                             </div>
                         {% endfor %}
                     </div>
+                </div>
+            </div>
+
+            {# Contenu de la réserve #}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">
+                        TODO cartes en réserve
+                    </div>
+                </div>
+                <div class="card-body">
                 </div>
             </div>
         </div>
@@ -145,14 +153,31 @@
                 </div>
             </div>
 
-            {# Probabilités de tirage par tour #}
-            <a href="{{ path('planeswalkers.deck.probabilites', {id: deck.id}) }}" class="text-light">
-                <div class="card border-left-light shadow py-2">
+            {# Estimation #}
+            <a href="{{ path('planeswalkers.deck.estimation', {id: deck.id}) }}" class="text-light click-main-depart" data-toggle="modal" data-target="#mainDepartModal">
+                <div class="card border-left-light shadow py-2 mb-4">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-light-800">Probabilités</div>
-                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">de tirage par tour</div>
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Estimation actuelle</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">de votre deck</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            {# Probabilités de tirage par tour #}
+            <a href="{{ path('planeswalkers.deck.probabilites', {id: deck.id}) }}" class="text-light">
+                <div class="card border-left-light shadow py-2 mb-4">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Probabilités de tirage</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">de vos cartes par tour</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-hat-wizard fa-2x text-gray-300"></i>
@@ -162,6 +187,22 @@
                 </div>
             </a>
 
+            {# Main de départ #}
+            <a href="#" class="text-light click-main-depart" data-toggle="modal" data-target="#mainDepartModal">
+                <div class="card border-left-light shadow py-2 mb-4">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Main de départ</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">Simulation</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-hands fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
 
         </div>
     </div>
@@ -173,6 +214,25 @@
         </div>
         <div class="card-body">
             {{ deck.content|raw }}
+        </div>
+    </div>
+
+    <!-- Main de départ Modal -->
+    <div class="modal fade" id="mainDepartModal" tabindex="-1" role="dialog" aria-labelledby="mainDepartModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="h5 modal-title" id="mainDepartModalTitle">Simulation d'une main de départ</div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="main_depart_area">
+                        <i class="fas fa-spinner fa-pulse"></i> Chargement en cours...
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -190,10 +250,10 @@
                 datasets: [{
                     data: [{% for cmc in deck.getManaCurve %}{{ cmc }}{% if not loop.last %},{% endif %}{% endfor %}],
                     backgroundColor: [
-                        {% for cmc in deck.getManaCurve %}'rgba(255, 255, 255, 0.2)'{% if not loop.last %},{% endif %}{% endfor %}
+                        {% for cmc in deck.getManaCurve %}'rgba(255, 255, 255, 0.5)'{% if not loop.last %},{% endif %}{% endfor %}
                     ],
                     borderColor: [
-                        {% for cmc in deck.getManaCurve %}'rgba(255, 255, 255, 0.2)'{% if not loop.last %},{% endif %}{% endfor %}
+                        {% for cmc in deck.getManaCurve %}'rgba(255, 255, 255, 0.5)'{% if not loop.last %},{% endif %}{% endfor %}
                     ],
                     borderWidth: 1
                 }]
@@ -333,6 +393,36 @@
             if (!$(e.target).is(div_cliquable) && !$.contains(div_cliquable[0], e.target)) {
                 $('#deck_card_search_results').hide();
             }
+        });
+
+        // Simulation d'une main de départ
+        $(document).on('click', '.click-main-depart', function (event) {
+            let parametres = {
+                deck: {{ deck.id }}
+            };
+            $.ajax({
+                url: "{{ path('planeswalkers.deck.ajax.maindepart') }}",
+                type: 'post',
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#loading-area').fadeIn();
+                },
+                success: function (data) {
+                    console.log(data.bibliotheque);
+                    let results_html = '<div class="row">';
+                    $.each(data.bibliotheque, function (index, element) {
+                        results_html = results_html + '<div class="col">';
+                        results_html = results_html + '<img class="img-fluid my-2" src="'+element.image+'" style="border-radius:15px;"/>';
+                        results_html = results_html + '</div>';
+                    });
+                    results_html = results_html + '</div>';
+                    $('#main_depart_area').html(results_html);
+                },
+                complete: function () {
+                    $('#loading-area').fadeOut();
+                },
+                data: parametres
+            });
         });
 
     </script>

@@ -4,6 +4,7 @@ namespace App\Controller\Planeswalkers;
 
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -136,6 +137,22 @@ class DeckController extends AbstractController
             'deck'         =>  $deck,
             'probabilites' =>  $probabilites,
         ]);
+    }
+
+    /**
+     * @Route("/admin/planeswalkers/deck/ajax-maindepart", name="planeswalkers.deck.ajax.maindepart", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function ajaxMainDepart(Request $request)
+    {
+        $datas = $request->request->all();
+        $deck = $this->getDoctrine()->getRepository(Deck::class)->find($datas['deck']);
+
+        $response = array(
+            'bibliotheque' => $deck->getMainDepart(),
+        );
+        return new JsonResponse($response);
     }
 
 }

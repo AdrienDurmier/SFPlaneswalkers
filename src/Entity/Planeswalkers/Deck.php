@@ -215,4 +215,31 @@ class Deck
         return $mana_curve;
     }
 
+    /**
+     * Génération de la bibliothèque
+     * @return array
+     */
+    public function getBibliotheque(){
+        $bibliotheque = array();
+        $n=0;foreach ($this->getCards() as $deck_card){
+            for ($i = 1; $i <= $deck_card->getQuantite(); $i++){
+                $bibliotheque[$n]['name'] = $deck_card->getCard()->getName();
+                $bibliotheque[$n]['image'] = $deck_card->getCard()->getImageUrisNormal();
+                $n++;
+            }
+        }
+        shuffle($bibliotheque);
+        return $bibliotheque;
+    }
+
+    /**
+     * Génération de la main de départ
+     * @return array
+     */
+    public function getMainDepart(){
+        $main_depart = array_slice($this->getBibliotheque(), 0, 7);
+
+        return $main_depart;
+    }
+
 }

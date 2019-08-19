@@ -21,14 +21,14 @@
             <form method="post" style="display:inline-block;"action="{{ path('planeswalkers.deck.delete', {id: deck.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?')">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete_deck') }}">
-                <button class="btn btn-sm btn-danger" title="Supprimer ce deck"><i class="fas fa-trash fa-sm text-white-50"></i> Supprimer ce deck</button>
+                <button class="btn btn-sm btn-danger" title="Delete this deck"><i class="fas fa-trash fa-sm text-white-50"></i> Delete this deck</button>
             </form>
         </div>
     </div>
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('planeswalkers.deck.index') }}">Mes decks</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('planeswalkers.deck.index') }}">My decks</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ deck.title }}</li>
         </ol>
     </nav>
@@ -48,7 +48,7 @@
                                 <div class="autocomplete_area my-1">
                                     <input type="hidden" id="id_scryfall" name="id_scryfall">
                                     <div class="input-group">
-                                        <input id="deck_card_search" name="deck_card_search" class="form-control form-control-sm" placeholder="Rechercher une carte..." type="search" autocomplete="off">
+                                        <input id="deck_card_search" name="deck_card_search" class="form-control form-control-sm" placeholder="Search a card..." type="search" autocomplete="off">
                                         <div class="input-group-append">
                                             <span class="input-group-text"><i class="fas fa-search"></i></span>
                                         </div>
@@ -61,12 +61,12 @@
                             <div class="col-sm-9 col-xl-4">
                                 <div class="input-group input-group-sm my-1">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Quantité</span>
+                                        <span class="input-group-text">Quantity</span>
                                     </div>
-                                    <input id="quantite" placeholder="Quantité" name="quantite" type="number" lang="en" min="0" step="1" value="1" class="form-control form-control-sm" required>
+                                    <input id="quantite" placeholder="Quantity" name="quantite" type="number" lang="en" min="0" step="1" value="1" class="form-control form-control-sm" required>
                                     <div class="input-group-append">
                                         <div class="input-group-text">
-                                            <input type="checkbox" name="reserve">&nbsp;Réserve
+                                            <input type="checkbox" name="reserve">&nbsp;Sideboard
                                         </div>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                             <div class="col-sm-3 col-xl-1">
                                 <div class="input-group my-1">
                                     <button class="btn btn-sm btn-success" type="submit">
-                                        <i class="fas fa-plus"></i> Ajouter
+                                        <i class="fas fa-plus"></i> Add
                                     </button>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <div class="h6 m-0 font-weight-bold text-light">
-                        {{ deck.countCards }} cartes principales
+                        {{ deck.countCards }} main cards
                     </div>
                 </div>
                 <div class="card-body">
@@ -125,7 +125,7 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <div class="h6 m-0 font-weight-bold text-light">
-                        {{ deck.countReserve }} cartes en réserve
+                        {{ deck.countReserve }} cards in sideboard
                     </div>
                 </div>
                 <div class="card-body">
@@ -168,13 +168,13 @@
                 </div>
                 <div class="card-body">
                     <p>
-                        <b>Couleur du deck:</b>
+                        <b>Deck colors:</b>
                         {% for color in deck.colorsDeck %}
                             <span class="mx-1 d-inline-block card-symbol-{{ color }}" style="width:20px;height:20px;"></span>
                         {% endfor %}
                     </p>
                     <hr>
-                    <p><b>Courbe de mana des sorts:</b></p>
+                    <p><b>Mana curve:</b></p>
                     <canvas id="manaCurveChart" width="400" height="400"></canvas>
                 </div>
             </div>
@@ -182,7 +182,7 @@
             {# Rareté #}
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Rareté</div>
+                    <div class="h6 m-0 font-weight-bold text-light">Rarity</div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -205,14 +205,24 @@
                 </div>
             </div>
 
+            {# Légalité #}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <div class="h6 m-0 font-weight-bold text-light">Legality</div>
+                </div>
+                <div class="card-body">
+
+                </div>
+            </div>
+
             {# Estimation #}
             <a href="{{ path('planeswalkers.deck.estimation', {id: deck.id}) }}" class="text-light">
                 <div class="card border-left-light shadow py-2 mb-4">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-light-800">Estimation actuelle</div>
-                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">de votre deck</div>
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Prices</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">based on scryfall API</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
@@ -228,8 +238,8 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-light-800">Probabilités de tirage</div>
-                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">de vos cartes par tour</div>
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Probability</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">analysis</div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-hat-wizard fa-2x text-gray-300"></i>
@@ -245,7 +255,7 @@
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-light-800">Main de départ</div>
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Starting hand</div>
                                 <div class="text-xs font-weight-bold text-light text-uppercase mb-1">Simulation</div>
                             </div>
                             <div class="col-auto">
@@ -262,7 +272,7 @@
     {# Commentaires #}
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <div class="h6 m-0 font-weight-bold text-light">Commentaires</div>
+            <div class="h6 m-0 font-weight-bold text-light">Comments</div>
         </div>
         <div class="card-body">
             {{ deck.content|raw }}

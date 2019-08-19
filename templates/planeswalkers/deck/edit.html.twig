@@ -91,29 +91,33 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        {% for deck_card in deck_cards %}
-                            {% if deck_card.quantite %}
-                            <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                                <div class="py-3">
-                                    <a href="{{ path('planeswalkers.card.show', {id: deck_card.card.idScryfall}) }}">
-                                        <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
-                                    </a>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <input type="number" min="0" step="1" class="form-control form-control-sm input-deckcard-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantite }}" />
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">
-                                                <a class="text-danger input-deckcard-delete" title="Supprimer cette carte" data-deckcard="{{ deck_card.id }}" style="cursor:pointer;">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </span>
+                    {% for key, decks_cards in deck_ordered %}
+                        <p><b>{{ key }}</b></p>
+                        <hr>
+                        <div class="row">
+                            {% for key, deck_card in decks_cards %}
+                                {% if deck_card.quantite %}
+                                    <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                        <div class="py-3">
+                                            <a href="{{ path('planeswalkers.card.show', {id: deck_card.card.idScryfall}) }}">
+                                                <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
+                                            </a>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <input type="number" min="0" step="1" class="form-control form-control-sm input-deckcard-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantite }}" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <a class="text-danger input-deckcard-delete" title="Supprimer cette carte" data-deckcard="{{ deck_card.id }}" style="cursor:pointer;">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -125,26 +129,30 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {% for deck_card in deck_cards %}
-                        {% if deck_card.quantiteReserve %}
-                            <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                                <div class="py-3">
-                                    <a href="{{ path('planeswalkers.card.show', {id: deck_card.card.idScryfall}) }}">
-                                        <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
-                                    </a>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <input type="number" min="0" step="1" class="form-control form-control-sm input-deckcard-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantiteReserve }}" />
-                                        <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                    <a class="text-danger input-deckcard-delete" title="Supprimer cette carte" data-deckcard="{{ deck_card.id }}" style="cursor:pointer;">
-                                                        <i class="fas fa-trash"></i>
-                                                    </a>
-                                                </span>
+                    {% for key, decks_cards in deck_ordered %}
+                        <div class="row">
+                            {% for key, deck_card in decks_cards %}
+                                {% if deck_card.quantiteReserve %}
+                                    <div class="deck-card-area col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                        <div class="py-3">
+                                            <a href="{{ path('planeswalkers.card.show', {id: deck_card.card.idScryfall}) }}">
+                                                <img src="{{ deck_card.card.imageUrisNormal }}" alt="{{ deck_card.card.name }}" class="img-fluid" style="border-radius:15px;">
+                                            </a>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <input type="number" min="0" step="1" class="form-control form-control-sm input-deckcard-quantite" data-deckcard="{{ deck_card.id }}" name="quantite" value="{{ deck_card.quantiteReserve }}" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                        <a class="text-danger input-deckcard-delete" title="Supprimer cette carte" data-deckcard="{{ deck_card.id }}" style="cursor:pointer;">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     {% endfor %}
                 </div>
             </div>

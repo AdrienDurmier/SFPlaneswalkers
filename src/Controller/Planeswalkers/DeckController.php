@@ -66,11 +66,29 @@ class DeckController extends AbstractController
      */
     public function edit(Deck $deck)
     {
-        $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findCardsOrderbyTypeline($deck);
+        $deck_ordered = [
+            'Creatures' => [],
+            'Planeswalkers' => [],
+            'Spells' => [],
+            'Lands' => [],
+        ];
+        foreach ($deck->getCards() as $deck_card){
+            if(strpos(strtolower($deck_card->getCard()->getTypeLine()), 'creature') !== false){
+                $deck_ordered['Creatures'][] = $deck_card;
+            }
+            else if(strpos(strtolower($deck_card->getCard()->getTypeLine()), 'planeswalker') !== false){
+                $deck_ordered['Planeswalkers'][] = $deck_card;
+            }
+            else if(strpos(strtolower($deck_card->getCard()->getTypeLine()), 'land') !== false){
+                $deck_ordered['Lands'][] = $deck_card;
+            }else{
+                $deck_ordered['Spells'][] = $deck_card;
+            }
+        }
 
         return $this->render('planeswalkers/deck/edit.html.twig', [
             'deck'         =>  $deck,
-            'deck_cards'   =>  $deck_cards,
+            'deck_ordered'   =>  $deck_ordered,
         ]);
     }
 

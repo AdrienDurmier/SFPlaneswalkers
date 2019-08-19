@@ -185,7 +185,23 @@
                     <div class="h6 m-0 font-weight-bold text-light">Rareté</div>
                 </div>
                 <div class="card-body">
-
+                    <div class="row">
+                        <div class="col-6">
+                            <canvas id="rarityPie" width="200" height="200"></canvas>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm table-striped">
+                                <tbody>
+                                    {% for key, rarity in deck.getRarity %}
+                                        <tr>
+                                            <td><small>{{ key }}</small></td>
+                                            <td>{{ ((rarity/deck.countCards)*100)|number_format(2) }}%</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -258,7 +274,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="h5 modal-title" id="mainDepartModalTitle">Simulation d'une <m></m>ain de départ</div>
+                    <div class="h5 modal-title" id="mainDepartModalTitle">Simulation d'une main de départ</div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -311,6 +327,40 @@
                             labelString: 'Nombre de cartes'
                         }
                     }]
+                }
+            }
+        });
+
+        // Pie: rareté des cartes
+        var pie = document.getElementById('rarityPie');
+        var rarityPie = new Chart(pie, {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [{% for rarity in deck.getRarity %}{{ rarity }}{% if not loop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [
+                        'rgba(20, 20, 20, 0.3)',
+                        'rgba(192, 192, 192, 0.3)',
+                        'rgba(255, 215, 0, 0.3)',
+                        'rgba(209, 93, 45, 0.3)'
+                    ],
+                    borderColor: [
+                        'rgba(0, 0, 0, 0.1)',
+                        'rgba(192, 192, 192, 0.1)',
+                        'rgba(255, 215, 0, 0.1)',
+                        'rgba(209, 93, 45, 0.1)'
+                    ]
+                }],
+                labels: [
+                    'Common',
+                    'Uncommon',
+                    'Rare',
+                    'Mythic'
+                ]
+            },
+            options: {
+                legend: {
+                    display: false
                 }
             }
         });

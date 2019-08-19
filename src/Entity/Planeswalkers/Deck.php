@@ -203,7 +203,7 @@ class Deck
 
     /**
      * Méthode de générer la courbe de mana
-     * @return int
+     * @return array
      */
     public function getManaCurve(){
         $mana_curve = array(
@@ -225,6 +225,23 @@ class Deck
             }
         }
         return $mana_curve;
+    }
+
+    /**
+     * Analyse de la rareté des cartes de ce deck
+     * @return array
+     */
+    public function getRarity(){
+        $rarity = array(
+            'common' => 0,
+            'uncommon' => 0,
+            'rare' => 0,
+            'mythic' => 0,
+        );
+        foreach($this->cartes as $deck_card){
+            $rarity[$deck_card->getCard()->getRarity()] += $deck_card->getQuantite();
+        }
+        return $rarity;
     }
 
     /**

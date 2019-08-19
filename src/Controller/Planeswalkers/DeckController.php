@@ -66,7 +66,7 @@ class DeckController extends AbstractController
      */
     public function edit(Deck $deck)
     {
-        $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findByDeck($deck);
+        $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findCardsOrderbyTypeline($deck);
 
         return $this->render('planeswalkers/deck/edit.html.twig', [
             'deck'         =>  $deck,
@@ -104,16 +104,25 @@ class DeckController extends AbstractController
 
         $estimation = [];
         $total = 0;
+        $total_main = 0;
+        $total_reserve = 0;
         foreach($deck_cards as $deck_card){
             $response_card = $apiScryfall->interroger('get', 'cards/'.$deck_card->getCard()->getIdScryfall());
-            $total_carte = $deck_card->getQuantite() * $response_card->body->prices->eur;
-            $total += $total_carte;
+            $total_carte_main = $deck_card->getQuantite() * $response_card->body->prices->eur;
+            $total_carte_reserve = $deck_card->getQuantiteReserve() * $response_card->body->prices->eur;
+            $total_main += $total_carte_main;
+            $total_reserve += $total_carte_reserve;
+            $total += $total_carte_main + $total_carte_reserve;
             // carte
             $estimation['cartes'][$deck_card->getCard()->getId()]['carte'] = $response_card->body;
             $estimation['cartes'][$deck_card->getCard()->getId()]['quantite'] = $deck_card->getQuantite();
-            $estimation['cartes'][$deck_card->getCard()->getId()]['total_carte'] = $total_carte;
+            $estimation['cartes'][$deck_card->getCard()->getId()]['quantite_reserve'] = $deck_card->getQuantiteReserve();
+            $estimation['cartes'][$deck_card->getCard()->getId()]['total_carte_main'] = $total_carte_main;
+            $estimation['cartes'][$deck_card->getCard()->getId()]['total_carte_reserve'] = $total_carte_reserve;
             // total
             $estimation['deck']['total'] = $total;
+            $estimation['deck']['total_main'] = $total_main;
+            $estimation['deck']['total_reserve'] = $total_reserve;
         }
 
         return $this->render('planeswalkers/deck/estimation.html.twig', [

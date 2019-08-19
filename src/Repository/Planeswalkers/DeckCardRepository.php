@@ -19,4 +19,15 @@ class DeckCardRepository extends ServiceEntityRepository
         parent::__construct($registry, DeckCard::class);
     }
 
+    public function findCardsOrderbyTypeline($deck)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->andWhere('c.deck = :deck');
+        $qb->setParameter('deck', $deck);
+        $qb->join('c.card', 'card');
+        $qb->orderBy('card.type_line', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

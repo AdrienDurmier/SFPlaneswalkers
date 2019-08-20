@@ -206,14 +206,21 @@
             </div>
 
             {# Légalité #}
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <div class="h6 m-0 font-weight-bold text-light">Legality</div>
+            <a href="{{ path('planeswalkers.deck.legality', {id: deck.id}) }}" class="text-light">
+                <div class="card border-left-light shadow py-2 mb-4">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="h5 mb-0 font-weight-bold text-light-800">Legality</div>
+                                <div class="text-xs font-weight-bold text-light text-uppercase mb-1">Advanced checking tool</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-double fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-
-                </div>
-            </div>
+            </a>
 
             {# Estimation #}
             <a href="{{ path('planeswalkers.deck.estimation', {id: deck.id}) }}" class="text-light">

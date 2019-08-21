@@ -2,28 +2,27 @@
 
 namespace App\Controller\Aide;
 
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Aide\Tutorial;
-use App\Repository\Aide\TutorialRepository;
 
 class TutorialController extends AbstractController
 {
     /**
-     * @Route("/admin/tutorials", name="tutorial.index")
-     * @param TutorialRepository $tutorialRepository
+     * @Route("/admin/aide/tutorials", name="aide.tutorial.index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(TutorialRepository $tutorialRepository)
+    public function index()
     {
-        $tutorials = $tutorialRepository->findAll();
-        return $this->render('aide/tutorial/index.html.twig', compact('tutorials'));
+        $tutorials = $this->getDoctrine()->getRepository(Tutorial::class)->findAll();
+        return $this->render('aide/tutorial/index.html.twig', [
+            'tutorials' => $tutorials
+        ]);
     }
 
     /**
-     * @Route("/admin/tutorial/show/{id}", name="tutorial.show", methods="GET|POST")
+     * @Route("/admin/aide/tutorial/show/{id}", name="aide.tutorial.show", methods="GET|POST")
      * @param Tutorial $tutorial
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -35,7 +34,7 @@ class TutorialController extends AbstractController
     }
 
     /**
-     * @Route("/admin/tutorial/new", name="tutorial.new", methods="GET|POST")
+     * @Route("/admin/aide/tutorial/new", name="aide.tutorial.new", methods="GET|POST")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -52,14 +51,14 @@ class TutorialController extends AbstractController
             $em->persist($tutorial);
             $em->flush();
             $this->addFlash('success', "Contenu créé avec succès");
-            return $this->redirectToRoute('tutorial.index');
+            return $this->redirectToRoute('aide.tutorial.index');
         }
 
         return $this->render('aide/tutorial/new.html.twig');
     }
 
     /**
-     * @Route("/admin/tutorial/edit/{id}", name="tutorial.edit", methods="GET|POST")
+     * @Route("/admin/aide/tutorial/edit/{id}", name="aide.tutorial.edit", methods="GET|POST")
      * @param Tutorial $tutorial
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -76,7 +75,7 @@ class TutorialController extends AbstractController
             $em->persist($tutorial);
             $em->flush();
             $this->addFlash('success', "Contenu modifié avec succès");
-            return $this->redirectToRoute('tutorial.index');
+            return $this->redirectToRoute('aide.tutorial.index');
         }
 
         return $this->render('aide/tutorial/edit.html.twig', [
@@ -85,11 +84,12 @@ class TutorialController extends AbstractController
     }
 
     /**
-     * @Route("/admin/tutorial/{id}", name="tutorial.delete", methods="DELETE")
+     * @Route("/admin/aide/tutorial/{id}", name="aide.tutorial.delete", methods="DELETE")
      * @param Tutorial $tutorial
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Tutorial $tutorial)
+    public function delete(Tutorial $tutorial, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         if($this->isCsrfTokenValid('delete_tutorial', $request->get('_token'))){
@@ -97,7 +97,7 @@ class TutorialController extends AbstractController
             $em->flush();
             $this->addFlash('success', "Contenu supprimé avec succès");
         }
-        return $this->redirectToRoute('tutorial.index');
+        return $this->redirectToRoute('aide.tutorial.index');
     }
 
 }

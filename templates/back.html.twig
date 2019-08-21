@@ -26,52 +26,56 @@
 
             <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('back.index') }}">
-                <div class="sidebar-brand-icon rotate-n-45">
-                    {#<i class="fab fa-wizards-of-the-coast"></i>#}
-                </div>
-                <div class="sidebar-brand-text mx-3">Planeswalkers</div>
-            </a>
-
-            <hr class="sidebar-divider my-0">
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('back.index') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i><span>Tableau de bord</span>
-                </a>
-            </li>
-
-            <hr class="sidebar-divider">
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseEdition" aria-expanded="true" aria-controls="collapseEdition">
-                    <i class="fas fa-bars"></i>
-                    <span>Éditions</span>
-                </a>
-                <div id="collapseEdition" class="collapse show" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ path('planeswalkers.set.index') }}">Liste</a>
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('back.index') }}">
+                    <div class="sidebar-brand-icon rotate-n-45">
+                        {#<i class="fab fa-wizards-of-the-coast"></i>#}
                     </div>
-                </div>
-            </li>
-
-            <hr class="sidebar-divider">
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDeck" aria-expanded="true" aria-controls="collapseDeck">
-                    <i class="fas fa-layer-group"></i>
-                    <span>Decks</span>
+                    <div class="sidebar-brand-text mx-3">Planeswalkers</div>
                 </a>
-                <div id="collapseDeck" class="collapse show" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ path('planeswalkers.deck.index') }}">Mes decks</a>
+
+                <hr class="sidebar-divider my-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('back.index') }}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i><span>Tableau de bord</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseEdition" aria-expanded="true" aria-controls="collapseEdition">
+                        <i class="fas fa-bars"></i>
+                        <span>Éditions</span>
+                    </a>
+                    <div id="collapseEdition" class="collapse {{ app.request.get('_route')|split('.')[1] == 'set' ? 'show' }}" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item {{ path('planeswalkers.set.index') == app.request.pathinfo ? 'active' }}" href="{{ path('planeswalkers.set.index') }}">
+                                Liste
+                            </a>
+                        </div>
                     </div>
+                </li>
+
+                <hr class="sidebar-divider">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="collapse {{ app.request.get('_route')|split('.')[1] == 'deck' ? 'show' }}" data-target="#collapseDeck" aria-expanded="true" aria-controls="collapseDeck">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Decks</span>
+                    </a>
+                    <div id="collapseDeck" class="collapse show" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item {{ path('planeswalkers.deck.index') == app.request.pathinfo ? 'active' }}" href="{{ path('planeswalkers.deck.index') }}">
+                                Mes decks
+                            </a>
+                        </div>
+                    </div>
+                </li>
+
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
-            </li>
-
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
 
             </ul>
 
@@ -102,9 +106,15 @@
                     </div>
 
                     <ul class="navbar-nav ml-auto">
-                        {# Aide #}
+                        {# Glossaire #}
                         <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="{{ path('tutorial.index') }}" title="Aide en ligne">
+                            <a class="nav-link dropdown-toggle" href="{{ path('aide.glossaire.index') }}" title="Glossaire">
+                                <i class="fas fa-info-circle fa-fw"></i>
+                            </a>
+                        </li>
+                        {# Tutoriaux #}
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ path('aide.tutorial.index') }}" title="Aide en ligne">
                                 <i class="fas fa-question-circle fa-fw"></i>
                             </a>
                         </li>
@@ -141,37 +151,18 @@
 
                     <div class="container-fluid">
                         {# Alertes #}
+                        {% import 'alertes.html.twig' as utils %}
                         {% for message in app.flashes('success') %}
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="fas fa-check"></i> {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                            {{ utils.alert(message, 'success', 'check') }}
                         {%  endfor %}
                         {% for message in app.flashes('info') %}
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                <i class="fas fa-info-circle"></i> {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                            {{ utils.alert(message, 'info', 'info-circle') }}
                         {%  endfor %}
                         {% for message in app.flashes('warning') %}
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i> {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                            {{ utils.alert(message, 'warning', 'exclamation-triangle') }}
                         {%  endfor %}
                         {% for message in app.flashes('danger') %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="fas fa-times"></i> {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                            {{ utils.alert(message, 'danger', 'times') }}
                         {%  endfor %}
 
                         {# Contenu de la page #}

@@ -47,7 +47,7 @@
                         <i class="fas fa-bars"></i>
                         <span>Éditions</span>
                     </a>
-                    <div id="collapseEdition" class="collapse {{ app.request.get('_route')|split('.')[1] == 'set' ? 'show' }}" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
+                    <div id="collapseEdition" class="collapse {{ app.request.get('_route')|split('.')[1] == 'set' ? 'show' }}" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item {{ path('planeswalkers.set.index') == app.request.pathinfo ? 'active' }}" href="{{ path('planeswalkers.set.index') }}">
                                 Liste
@@ -58,14 +58,29 @@
 
                 <hr class="sidebar-divider">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" data-toggle="collapse {{ app.request.get('_route')|split('.')[1] == 'deck' ? 'show' }}" data-target="#collapseDeck" aria-expanded="true" aria-controls="collapseDeck">
+                    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseDeck" aria-expanded="true" aria-controls="collapseDeck">
                         <i class="fas fa-layer-group"></i>
                         <span>Decks</span>
                     </a>
-                    <div id="collapseDeck" class="collapse show" aria-labelledby="headingDeck" data-parent="#accordionSidebar" style="">
+                    <div id="collapseDeck" class="collapse {{ app.request.get('_route')|split('.')[1] == 'deck' ? 'show' }}" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item {{ path('planeswalkers.deck.index') == app.request.pathinfo ? 'active' }}" href="{{ path('planeswalkers.deck.index') }}">
                                 Mes decks
+                            </a>
+                        </div>
+                    </div>
+                </li>
+
+                <hr class="sidebar-divider">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseArtist" aria-expanded="true" aria-controls="collapseArtist">
+                        <i class="fas fa-paint-brush"></i>
+                        <span>Artists</span>
+                    </a>
+                    <div id="collapseArtist" class="collapse {{ app.request.get('_route')|split('.')[1] == 'artist' ? 'show' }}" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item {{ path('planeswalkers.artist.index') == app.request.pathinfo ? 'active' }}" href="{{ path('planeswalkers.artist.index') }}">
+                                Liste
                             </a>
                         </div>
                     </div>

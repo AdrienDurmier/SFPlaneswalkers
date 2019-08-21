@@ -1,0 +1,36 @@
+{% extends 'back.html.twig' %}
+
+{% block title %}
+    {{ name }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-200">{{ name }}</h1>
+    </div>
+
+    <hr>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <tbody>
+                    {% for card in cards.data %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('planeswalkers.card.show', {id: card.id}) }}">
+                                    <img src="{{ card.image_uris.art_crop }}" alt="{{ card.name }}" class="img-fluid" style="width:70px;">
+                                </a>
+                            </td>
+                            <td>{{ card.name }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

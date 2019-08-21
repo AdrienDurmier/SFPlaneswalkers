@@ -2,6 +2,7 @@
 
 namespace App\Controller\Planeswalkers;
 
+use App\Service\Planeswalkers\LegalityService;
 use Doctrine\DBAL\Exception\ServerException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -112,117 +113,20 @@ class DeckController extends AbstractController
     /**
      * @Route("/admin/planeswalkers/decks-legality/{id}", name="planeswalkers.deck.legality")
      * @param Deck $deck
-     * @param APIScryfall $apiScryfall
+     * @param LegalityService $legalityService
      * @return Response
      * @throws ServerException
      */
-    public function legality(Deck $deck, APIScryfall $apiScryfall)
+    public function legality(Deck $deck, LegalityService $legalityService)
     {
         $deck_cards = $this->getDoctrine()->getRepository(DeckCard::class)->findByDeck($deck);
-
-        $legalities = [];
-        $standard = true;
-        $future = true;
-        $modern = true;
-        $legacy = true;
-        $pauper = true;
-        $vintage = true;
-        $penny = true;
-        $commander = true;
-        $brawl = true;
-        $duel = true;
-        $oldschool = true;
-        foreach($deck_cards as $deck_card){
-            $response_card = $apiScryfall->interroger('get', 'cards/'.$deck_card->getCard()->getIdScryfall());
-            // Cartes
-            $legalities['cartes'][$deck_card->getCard()->getId()]['carte'] = $response_card->body;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['quantite']   = $deck_card->getQuantite();
-            $legalities['cartes'][$deck_card->getCard()->getId()]['quantite_reserve'] = $deck_card->getQuantiteReserve();
-            // Cartes - legality
-            $legalities['cartes'][$deck_card->getCard()->getId()]['standard']   = $response_card->body->legalities->standard;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['future']     = $response_card->body->legalities->future;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['modern']     = $response_card->body->legalities->modern;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['legacy']     = $response_card->body->legalities->legacy;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['pauper']     = $response_card->body->legalities->pauper;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['vintage']    = $response_card->body->legalities->vintage;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['penny']      = $response_card->body->legalities->penny;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['commander']  = $response_card->body->legalities->commander;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['brawl']      = $response_card->body->legalities->brawl;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['duel']       = $response_card->body->legalities->duel;
-            $legalities['cartes'][$deck_card->getCard()->getId()]['oldschool']  = $response_card->body->legalities->oldschool;
-            // Résumé
-            if($response_card->body->legalities->standard == 'not_legal'
-                || $response_card->body->legalities->standard == 'banned'
-                || ($response_card->body->legalities->standard == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $standard = false;
-            }
-            if($response_card->body->legalities->future == 'not_legal'
-                || $response_card->body->legalities->future == 'banned'
-                || ($response_card->body->legalities->future == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $future = false;
-            }
-            if($response_card->body->legalities->modern == 'not_legal'
-                || $response_card->body->legalities->modern == 'banned'
-                || ($response_card->body->legalities->modern == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $modern = false;
-            }
-            if($response_card->body->legalities->legacy == 'not_legal'
-                || $response_card->body->legalities->legacy == 'banned'
-                || ($response_card->body->legalities->legacy == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $legacy = false;
-            }
-            if($response_card->body->legalities->pauper == 'not_legal'
-                || $response_card->body->legalities->pauper == 'banned'
-                || ($response_card->body->legalities->pauper == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $pauper = false;
-            }
-            if($response_card->body->legalities->vintage == 'not_legal'
-                || $response_card->body->legalities->vintage == 'banned'
-                || ($response_card->body->legalities->vintage == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $vintage = false;
-            }
-            if($response_card->body->legalities->penny == 'not_legal'
-                || $response_card->body->legalities->penny == 'banned'
-                || ($response_card->body->legalities->penny == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $penny = false;
-            }
-            if($response_card->body->legalities->commander == 'not_legal'
-                || $response_card->body->legalities->commander == 'banned'
-                || ($response_card->body->legalities->commander == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $commander = false;
-            }
-            if($response_card->body->legalities->brawl == 'not_legal'
-                || $response_card->body->legalities->brawl == 'banned'
-                || ($response_card->body->legalities->brawl == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $brawl = false;
-            }
-            if($response_card->body->legalities->duel == 'not_legal'
-                || $response_card->body->legalities->duel == 'banned'
-                || ($response_card->body->legalities->duel == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $duel = false;
-            }
-            if($response_card->body->legalities->oldschool == 'not_legal'
-                || $response_card->body->legalities->oldschool == 'banned'
-                || ($response_card->body->legalities->oldschool == 'restricted' && $deck_card->getQuantite() + $deck_card->getQuantiteReserve() > 1)){
-                $oldschool = false;
-            }
-            $legalities['deck']['legality']['standard'] = $standard;
-            $legalities['deck']['legality']['future'] = $future;
-            $legalities['deck']['legality']['modern'] = $modern;
-            $legalities['deck']['legality']['legacy'] = $legacy;
-            $legalities['deck']['legality']['pauper'] = $pauper;
-            $legalities['deck']['legality']['vintage'] = $vintage;
-            $legalities['deck']['legality']['penny'] = $penny;
-            $legalities['deck']['legality']['commander'] = $commander;
-            $legalities['deck']['legality']['brawl'] = $brawl;
-            $legalities['deck']['legality']['duel'] = $duel;
-            $legalities['deck']['legality']['oldschool'] = $oldschool;
-        }
-        // dump($legalities);die();
+        $legalities_deck = $legalityService->deck($deck_cards);
+        $legalities_cartes = $legalityService->cards($deck_cards);
 
         return $this->render('planeswalkers/deck/legality.html.twig', [
             'deck'         =>  $deck,
-            'legalities'   =>  $legalities,
+            'legalities_deck'   =>  $legalities_deck,
+            'legalities_cartes'   =>  $legalities_cartes,
         ]);
     }
 

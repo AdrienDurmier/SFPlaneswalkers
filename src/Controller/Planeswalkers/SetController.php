@@ -3,7 +3,9 @@
 namespace App\Controller\Planeswalkers;
 
 use Doctrine\DBAL\Exception\ServerException;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\APIScryfall;
@@ -12,16 +14,24 @@ class SetController extends AbstractController
 {
     /**
      * @Route("/admin/planeswalkers/sets", name="planeswalkers.set.index")
+     * @param PaginatorInterface $paginator
      * @param APIScryfall $apiScryfall
+     * @param Request $request
      * @return Response
      * @throws ServerException
      */
-    public function index(APIScryfall $apiScryfall)
+    public function index(PaginatorInterface $paginator, APIScryfall $apiScryfall, Request $request)
     {
         $response = $apiScryfall->interroger('get', 'sets');
 
+        $sets = $paginator->paginate(
+            $response->body->data,
+            $request->query->getInt('page', 1),
+            60
+        );
+
         return $this->render('planeswalkers/set/index.html.twig', [
-            'sets'  =>  $response->body,
+            'sets'  =>  $sets,
         ]);
     }
 

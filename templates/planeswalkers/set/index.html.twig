@@ -24,7 +24,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for set in sets.data %}
+                    {% for set in sets %}
                         <tr>
                             <td style="color:#fff;font-size:2em;">
                                 <img src="{{ set.icon_svg_uri }}" class="img-fluid" style="height:50px;">
@@ -43,6 +43,10 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <div class="navigation">
+        {{ knp_pagination_render(sets) }}
     </div>
 
 {% endblock %}

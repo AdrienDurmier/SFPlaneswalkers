@@ -46,7 +46,7 @@ class ArtistController extends AbstractController
      */
     public function show($name, PaginatorInterface $paginator, APIScryfall $apiScryfall, Request $request)
     {
-        $response_cards = $apiScryfall->interroger('get', 'cards/search?q=a%3A'.str_replace(' ', '',$name));
+        $response_cards = $apiScryfall->interroger('get', 'collapseArtist=a%3A'.str_replace(' ', '',$name));
 
         $cards = $paginator->paginate(
             $response_cards->body->data,

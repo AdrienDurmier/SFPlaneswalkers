@@ -127,14 +127,22 @@
                 <dd class="col-md-10">{{ card.card_back_id }}</dd>
                 <dt class="col-md-2">artist</dt>
                 <dd class="col-md-10">{{ card.artist }}</dd>
-                <dt class="col-md-2">Gatherer</dt>
-                <dd class="col-md-10"><a href="{{ card.related_uris.gatherer }}" target="_blank">lien</a></dd>
-                <dt class="col-md-2">TCGplayer</dt>
-                <dd class="col-md-10"><a href="{{ card.related_uris.tcgplayer_decks }}" target="_blank">lien</a></dd>
-                <dt class="col-md-2">EDHrec</dt>
-                <dd class="col-md-10"><a href="{{ card.related_uris.edhrec }}" target="_blank">lien</a></dd>
-                <dt class="col-md-2">MTG Top 8</dt>
-                <dd class="col-md-10"><a href="{{ card.related_uris.mtgtop8 }}" target="_blank">lien</a></dd>
+                {% if card.related_uris.gatherer is defined %}
+                    <dt class="col-md-2">Gatherer</dt>
+                    <dd class="col-md-10"><a href="{{ card.related_uris.gatherer }}" target="_blank">lien</a></dd>
+                {% endif %}
+                {% if card.related_uris.tcgplayer_decks is defined %}
+                    <dt class="col-md-2">TCGplayer</dt>
+                    <dd class="col-md-10"><a href="{{ card.related_uris.tcgplayer_decks }}" target="_blank">lien</a></dd>
+                {% endif %}
+                {% if card.related_uris.edhrec is defined %}
+                    <dt class="col-md-2">EDHrec</dt>
+                    <dd class="col-md-10"><a href="{{ card.related_uris.edhrec }}" target="_blank">lien</a></dd>
+                {% endif %}
+                {% if card.related_uris.mtgtop8 is defined %}
+                    <dt class="col-md-2">MTG Top 8</dt>
+                    <dd class="col-md-10"><a href="{{ card.related_uris.mtgtop8 }}" target="_blank">lien</a></dd>
+                {% endif %}
 
             </dl>
         </div>

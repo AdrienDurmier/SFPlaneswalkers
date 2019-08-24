@@ -254,6 +254,7 @@ class Deck
             for ($i = 1; $i <= $deck_card->getQuantite(); $i++){
                 $bibliotheque[$n]['name'] = $deck_card->getCard()->getName();
                 $bibliotheque[$n]['image'] = $deck_card->getCard()->getImageUrisNormal();
+                $bibliotheque[$n]['thumb'] = $deck_card->getCard()->getImageUrisSmall();
                 $n++;
             }
         }

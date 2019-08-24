@@ -4,44 +4,35 @@
 
 {% block body %}
 
-
-
     <div class="row">
         <div class="col-xl-2">
-            <div id="game_exil">
-                <h2>Exil</h2>
-                <ol data-draggable="target">
-                </ol>
+            <div id="game_exil" data-draggable="target">
             </div>
             <hr>
-            <div id="game_graveyard">
-                <h2>Graveyard</h2>
-                <ol data-draggable="target">
-                </ol>
+            <div id="game_graveyard" data-draggable="target">
             </div>
         </div>
         <div class="col-xl-10">
-            <div id="game_battlefield">
-                <h2>Battlefield</h2>
-                <ol data-draggable="target"></ol>
-            </div>
+            <div id="game_battlefield" data-draggable="target"></div>
         </div>
     </div>
 
+    <br>
+
     <div class="row">
         <div class="col-xl-10">
-            <h2>Hand</h2>
-            <div id="game_hand" data-draggable="target" class="row">
+            <div id="game_hand" data-draggable="target">
             </div>
         </div>
         <div class="col-xl-2">
-            <h2>Library</h2>
-            <div id="game_library" data-draggable="target" class="row">
-                {% for card in bibliotheque %}
-                    <div class="col-xs-12" data-draggable="item">
-                        <img class="carte img-fluid my-2" src="{{ card.thumb }}"/>
-                    </div>
-                {% endfor %}
+            <div id="game_library" data-draggable="target">
+                <div class="row">
+                    {% for card in bibliotheque %}
+                        <div class="col-xs-12" data-draggable="item">
+                            <img class="carte img-fluid my-2" src="{{ card.thumb }}"/>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -50,17 +41,14 @@
 
 {% block javascripts %}
     <script>
-        (function()
-        {
-            if
-            (
+        (function() {
+            if (
                 !document.querySelectorAll
                 ||
                 !('draggable' in document.createElement('span'))
                 ||
                 window.opera
-            )
-            { return; }
+            ) { return; }
             for(var
                     items = document.querySelectorAll('[data-draggable="item"]'),
                     len = items.length,

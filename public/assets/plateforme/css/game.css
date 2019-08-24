@@ -30,4 +30,5 @@ body {
 
 #game_hand {height:250px;}
 #game_library {height:250px;}
+#game_battlefield {height: calc(90vh - 250px);}
 .carte {border-radius:15px;margin:5px;}

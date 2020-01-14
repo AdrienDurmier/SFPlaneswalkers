@@ -195,7 +195,11 @@
                                     {% for key, rarity in deck.getRarity %}
                                         <tr>
                                             <td><small>{{ key }}</small></td>
-                                            <td>{{ ((rarity/deck.countCards)*100)|number_format(2) }}%</td>
+                                            <td>
+												{% if deck.countCards > 0 %}
+													{{ ((rarity/deck.countCards)*100)|number_format(2) }}%
+												{% endif %}
+											</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
